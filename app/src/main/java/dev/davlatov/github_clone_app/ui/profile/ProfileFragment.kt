@@ -31,7 +31,6 @@ class ProfileFragment : BaseFragment() {
     private lateinit var adapter: ProfileRepositoriesRvAdapter
 
     private val viewModel by viewModels<ProfileViewModel>()
-    private lateinit var baseActivity: BaseActivity
     private lateinit var _viewLifecycleOwner: LifecycleOwner
 
     @Inject
@@ -53,29 +52,29 @@ class ProfileFragment : BaseFragment() {
 
     private fun initViews() {
         _viewLifecycleOwner = viewLifecycleOwner
-        baseActivity = requireActivity() as BaseActivity
         sharedPrefs = SharedPrefs.getInstance(requireContext())
         adapter = ProfileRepositoriesRvAdapter()
         binding.recyclerView.setUpLayoutManagerToLinearHorizontal(requireContext())
         viewModel.getUserAllData(sharedPrefs.accessToken!!)
         setupObserver()
-        binding.swipeRefreshLayout.setOnRefreshListener { viewModel.getUserAllData(sharedPrefs.accessToken!!) }
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            viewModel.getUserAllData(sharedPrefs.accessToken!!)
+        }
     }
 
     private fun setupObserver() {
         viewModel.userAllData.observe(_viewLifecycleOwner) {
             when (it.status) {
                 Status.SUCCESS -> {
-                    baseActivity.dismissDialog()
+                    dismissDialog()
                     binding.swipeRefreshLayout.isRefreshing = false
                     it.data?.let { triple -> setDataToUI(triple) }
                 }
                 Status.LOADING -> {
-                    baseActivity.showDialog()
+                    showDialog()
                 }
                 Status.ERROR -> {
-                    //Handle Error
-                    baseActivity.dismissDialog()
+                    dismissDialog()
                     Logger.d(TAG, it.message.toString())
                     fireToast(it.message.toString())
                 }

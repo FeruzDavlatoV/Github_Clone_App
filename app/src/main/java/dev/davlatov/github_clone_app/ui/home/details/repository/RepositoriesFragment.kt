@@ -31,7 +31,6 @@ class RepositoriesFragment : BaseFragment() {
     private lateinit var adapter: UserRepositoriesRvAdapter
 
     private val viewModel by viewModels<RepositoriesViewModel>()
-    private lateinit var baseActivity: BaseActivity
     private lateinit var _viewLifecycleOwner: LifecycleOwner
 
     @Inject
@@ -52,7 +51,6 @@ class RepositoriesFragment : BaseFragment() {
     }
 
     private fun initViews() {
-        baseActivity = requireActivity() as BaseActivity
         _viewLifecycleOwner = viewLifecycleOwner
         adapter = UserRepositoriesRvAdapter()
         binding.recyclerView.setUpLayoutManagerToLinearVertical(requireContext())
@@ -65,24 +63,27 @@ class RepositoriesFragment : BaseFragment() {
                 viewModel.getUserRepositories(sharedPrefs.accessToken!!)
             }
         }
+        binding.imageViewGoBack.setOnClickListener {
+            requireActivity().onBackPressed()
+        }
     }
 
     private fun setupObserver() {
         viewModel.userRepositories.observe(_viewLifecycleOwner) {
             when (it.status) {
                 Status.SUCCESS -> {
-                    baseActivity.dismissDialog()
+                    dismissDialog()
                     binding.swipeRefreshLayout.isRefreshing = false
                     it.data?.let { response ->
                         setDataToUI(response)
                     }
                 }
                 Status.LOADING -> {
-                    baseActivity.showDialog()
+                    showDialog()
                 }
                 Status.ERROR -> {
                     //Handle Error
-                    baseActivity.dismissDialog()
+                    dismissDialog()
                     Logger.d(ProfileFragment.TAG, it.message.toString())
                     fireToast(it.message.toString())
                 }

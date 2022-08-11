@@ -34,7 +34,6 @@ class SearchFragment : BaseFragment() {
     private lateinit var adapterUsers: UsersRvAdapter
 
     private val viewModel by viewModels<SearchViewModel>()
-    private lateinit var baseActivity: BaseActivity
     private lateinit var _viewLifecycleOwner: LifecycleOwner
 
     @Inject
@@ -55,7 +54,6 @@ class SearchFragment : BaseFragment() {
     }
 
     private fun initViews() {
-        baseActivity = requireActivity() as BaseActivity
         _viewLifecycleOwner = viewLifecycleOwner
         adapterRepos = SearchRepositoriesRvAdapter()
         adapterUsers = UsersRvAdapter()
@@ -72,6 +70,9 @@ class SearchFragment : BaseFragment() {
                 false
             })
         }
+        binding.imageViewGoBack.setOnClickListener {
+            requireActivity().onBackPressed()
+        }
     }
 
     private fun performSearch() {
@@ -80,17 +81,17 @@ class SearchFragment : BaseFragment() {
         if (query.isNotEmpty() && query.isNotBlank()) {
             when (binding.radioGroup.checkedRadioButtonId) {
                 binding.radioButton1.id -> {
-                    baseActivity.showDialog()
+                    showDialog()
                     viewModel.getRepositories(query)
                     setupRepositoriesObserver()
                 }
                 binding.radioButton2.id -> {
-                    baseActivity.showDialog()
+                    showDialog()
                     viewModel.getUsers(query)
                     setupUsersObserver()
                 }
                 else -> {
-                    baseActivity.showDialog()
+                    showDialog()
                     viewModel.getRepositories(query)
                     setupRepositoriesObserver()
                 }
@@ -102,7 +103,7 @@ class SearchFragment : BaseFragment() {
         viewModel.usersResponse.observe(_viewLifecycleOwner) {
             when (it.status) {
                 Status.SUCCESS -> {
-                    baseActivity.dismissDialog()
+                    dismissDialog()
                     binding.recyclerView.visibility = View.VISIBLE
                     binding.linearLayoutEmpty.visibility = View.GONE
                     it.data?.let { response ->
@@ -110,13 +111,13 @@ class SearchFragment : BaseFragment() {
                     }
                 }
                 Status.LOADING -> {
-                    baseActivity.showDialog()
+                    dismissDialog()
                     binding.recyclerView.visibility = View.GONE
                     binding.linearLayoutEmpty.visibility = View.VISIBLE
                 }
                 Status.ERROR -> {
                     //Handle Error
-                    baseActivity.dismissDialog()
+                    dismissDialog()
                     binding.recyclerView.visibility = View.GONE
                     binding.linearLayoutEmpty.visibility = View.VISIBLE
                     Logger.d(ProfileFragment.TAG, it.message.toString())
@@ -130,7 +131,7 @@ class SearchFragment : BaseFragment() {
         viewModel.repositoriesResponse.observe(_viewLifecycleOwner) {
             when (it.status) {
                 Status.SUCCESS -> {
-                    baseActivity.dismissDialog()
+                    dismissDialog()
                     binding.recyclerView.visibility = View.VISIBLE
                     binding.linearLayoutEmpty.visibility = View.GONE
                     it.data?.let { response ->
@@ -138,13 +139,13 @@ class SearchFragment : BaseFragment() {
                     }
                 }
                 Status.LOADING -> {
-                    baseActivity.showDialog()
+                    showDialog()
                     binding.recyclerView.visibility = View.GONE
                     binding.linearLayoutEmpty.visibility = View.VISIBLE
                 }
                 Status.ERROR -> {
                     //Handle Error
-                    baseActivity.dismissDialog()
+                    showDialog()
                     binding.recyclerView.visibility = View.GONE
                     binding.linearLayoutEmpty.visibility = View.VISIBLE
                     Logger.d(ProfileFragment.TAG, it.message.toString())

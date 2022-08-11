@@ -3,10 +3,12 @@ package dev.davlatov.github_clone_app.ui
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import dagger.hilt.android.AndroidEntryPoint
 import dev.davlatov.github_clone_app.databinding.CustomDialogLoadingBinding
 
 
 // this activity is a base activity for all activities
+@AndroidEntryPoint
 open class BaseActivity : AppCompatActivity() {
 
     private lateinit var dialogBinding: CustomDialogLoadingBinding

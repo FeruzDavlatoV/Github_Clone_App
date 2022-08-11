@@ -6,8 +6,8 @@ object Constants {
     const val apiURL = "https://api.github.com/"
     const val oauthLoginURL = "https://github.com/login/oauth/authorize"
     const val redirectUri = "githubappsclone://callback"
-    const val clientID = "8f3cf5f09bd0c93a0528"
-    const val clientSecret = "5447af3efb5afba3751aa6a0025e97affcf1a538"
+    const val clientID = "78f5f59b66f845447dc7"
+    const val clientSecret = "1e5431215c3f10ff476006bc2aeb0d3922e084b2"
 
 
 }
